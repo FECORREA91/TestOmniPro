@@ -1,0 +1,5 @@
+1. Install Cypress
+npm install cypress --save-dev
+2. Install npx
+npm install -g npx
+3.npx cypress open
