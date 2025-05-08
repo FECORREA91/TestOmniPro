@@ -13,6 +13,27 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
+// xpath
+require('cypress-xpath');
+require('cypress-real-events/support');
+require('./commands');
+require('./hover-polyfill');
+
+//  Global error handling
+Cypress.on('uncaught:exception', (err) => {
+  const ignoredErrors = [
+    'ga is not defined',       // Google Analytics
+    'replaceAll',              // undefined
+    'postMessage',             // windows
+    'Cannot read properties',  // undefined/null
+  ];
+  if (ignoredErrors.some(error => err.message.includes(error))) {
+    console.log('Error ignorado:', err.message); // Opcional: para debug
+    return false;
+  }
+  return true;
+});
+
 // Import commands.js using ES2015 syntax:
 require('./commands');
 

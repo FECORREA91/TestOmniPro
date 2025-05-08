@@ -1,0 +1,15 @@
+# Dependencias
+node_modules/
+
+# Archivos de entorno
+.env
+.env.local
+
+# Cypress
+cypress/downloads/
+cypress/screenshots/
+cypress/videos/
+cypress/fixtures/example.json
+
+# Reportes temporales
+cypress/reports/

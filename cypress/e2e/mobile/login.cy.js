@@ -1,4 +1,4 @@
-const LoginPage = require('../../../support/pages/LoginPage');
+const LoginPage = require('../../support/pages/LoginPage');
 
 describe('Flujo de Registro en Dafiti', () => {
   it('Registro exitoso con credenciales generadas', () => {

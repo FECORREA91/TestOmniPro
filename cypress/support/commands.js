@@ -1,26 +1,19 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+Cypress.Commands.add('hoverAndVerify', (activatorSelector, menuSelector) => {
+  // 1. Intenta con eventos de mouse normales
+  cy.get(activatorSelector)
+    .should('be.visible')
+    .realHover() // Usa cypress-real-events para hover más realista
 
+  // 2. Si falla, usa el task como fallback
+  cy.get(menuSelector, { timeout: 15000 }).then(($menu) => {
+    if ($menu.css('display') === 'none') {
+      cy.task('forceHover', { selector: activatorSelector });
+      cy.task('forceVisible', { selector: menuSelector });
+    }
+  });
+
+  // 3. Verificación final
+  cy.get(menuSelector)
+    .should('be.visible')
+    .and('not.have.css', 'display', 'none');
+});

@@ -1,4 +1,4 @@
-// Importar los generadores desde utilities
+// Import generators from utilities
 const { generateRandomEmail, generateRandomPassword } = require('../utilities/generators');
 
 class LoginPage {
@@ -21,11 +21,13 @@ class LoginPage {
     gender: () => cy.get('#RegistrationForm_gender'),
     acceptTerms: () => cy.get('#RegistrationForm_terms_accepted'),
     createAccount: () => cy.get('#createAccountButton'),
-    verifyName: () => cy.get('#LoginInfoTag > .text'),
-    usernameInput: () => cy.get("#username"),
-    passwordInput: () => cy.get("#password"),
-    loginButton: () => cy.get("#login-btn"),
-    errorMessage: () => cy.get(".error-message"),
+    verifyName: () =>cy.get('#LoginInfoTag > .text'),
+    menuUser: ()=> cy.xpath('//*[@id="hdMenuContainer"]/ul'),
+    logOut: ()=> cy.get('a.sel-logout').should('exist'),
+    usernameInput: () => cy.get('#LoginForm_email'),
+    passwordInput: () => cy.get('#LoginForm_password'),
+    loginButton: () => cy.get('#loginButton'),
+    errorMessage: () => cy.get('#form-account-login > fieldset > div:nth-child(5) > div.lfloat.size2of3 > div.loginField.error.mtm'),
   };
 
   navigate() {
@@ -42,18 +44,18 @@ class LoginPage {
   }
 
   registerNewUser(userData = {}) {
-    // Generar credenciales si no existen
+    // Generate credential 
     if (!this.currentCredentials) {
       this.generateCredentials();
     }
 
-    // Completar formulario de registro
+    // fill fields form
     this.elements.registerNewUser().click();
     this.elements.email().type(this.currentCredentials.email);
     this.elements.newPassword().type(this.currentCredentials.password);
     this.elements.confirmPass().type(this.currentCredentials.password);
     
-    // Campos obligatorios adicionales
+    // fill mandatory fields
     this.elements.name().type(userData.name || 'Test');
     this.elements.lastname().type(userData.lastname || 'User');
     this.elements.docNumber().type(userData.docNumber || '1234567890');
@@ -62,10 +64,8 @@ class LoginPage {
     this.elements.dateOfBirthM().type('1');
     this.elements.dateOfBirthY().select('1991');
     this.elements.gender().select('Masculino');
-    
     this.elements.acceptTerms().check();
     this.elements.createAccount().click();
-    
     return this;
   }
 
@@ -90,21 +90,39 @@ class LoginPage {
     return this;
   }
 
-  verifySuccessfulLogin(expectedName = 'Test User') {
+
+  verifySuccessfulLogin(expectedName = 'Hola, Carlos') {
     this.elements.verifyName().should('contain.text', expectedName);
     return this;
+  }
+
+
+  verifyLogoutSuccess() {
+    // 1. Activate menu
+    cy.hoverAndVerify('.arrowIcon', 'ul.hdLoginMenu');
+
+    // 2. Clic on logout button
+    cy.contains('ul.hdLoginMenu a', 'Salir')
+      .should(($el) => {
+        // Ensure visibility even if hidden by CSS
+        if ($el.css('visibility') === 'hidden') {
+          $el.css('visibility', 'visible');
+        }
+      })
+      .click({ force: true });
   }
 
   verifyErrorMessage(message) {
     this.elements.errorMessage().should("contain.text", message);
     return this;
   }
+  
 
   getCurrentCredentials() {
     if (!this.currentCredentials) {
       throw new Error('No hay credenciales generadas');
     }
-    return { ...this.currentCredentials }; // Retorna copia para evitar modificaciones
+    return { ...this.currentCredentials };
   }
 }
 

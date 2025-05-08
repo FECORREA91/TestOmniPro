@@ -1,6 +1,6 @@
 // cypress/support/utilities/generators.js
 
-function generateRandomEmail(domain = "test.com", usernameLength = 5) {
+function generateRandomEmail(domain = "gmail.com", usernameLength = 5) {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     let username = '';
     
