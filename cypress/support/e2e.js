@@ -13,6 +13,8 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
+// Reporter
+import 'cypress-mochawesome-reporter/register';
 // xpath
 require('cypress-xpath');
 require('cypress-real-events/support');
